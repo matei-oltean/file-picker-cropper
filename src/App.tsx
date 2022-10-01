@@ -1,24 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { ChangeEventHandler, useRef } from "react";
+import "./App.css";
 
 function App() {
+  const [images, setImages] = React.useState<File[]>([]);
+  const fileInput = useRef(null)
+  const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const newImages = [...images, event.target.files[0]];
+    setImages(newImages);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div>
+      <div>
+        <button
+          className="upload-btn"
+          onClick={() => fileInput.current.click()}
         >
-          Learn React
-        </a>
-      </header>
+          Choose PNG File
+        </button>
+        <input
+          type="file"
+          id="image_uploads"
+          ref={fileInput}
+          onChange={onChangeHandler}
+          accept=".png"
+          style={{ display: "none" }}
+        />
+      </div>
+      <div>
+        {images.map((src: File) => (
+          <img src={URL.createObjectURL(src)} height={512} />
+        ))}{" "}
+      </div>
+      <div>
+        <button>Submit</button>
+      </div>
     </div>
   );
 }
